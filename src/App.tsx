@@ -75,7 +75,7 @@ function App() {
       {/* Navigation Header */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#050505]/80 backdrop-blur-md">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <a href="https://filatiev.pro" className="text-sm font-mono text-white/60 hover:text-[#00ffff] transition-colors">
+          <a href="https://photo.filatiev.pro/" className="text-sm font-mono text-white/60 hover:text-[#00ffff] transition-colors">
             ← FILATIEV.PRO (PHOTO)
           </a>
           <div className="font-mono text-[#00ff41] text-xs animate-pulse">
@@ -125,11 +125,18 @@ function App() {
             </p>
           </div>
 
-          <div className="mt-12 group">
-            <a href="#contact" className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-mono font-bold text-white transition-all duration-300 bg-transparent border-2 border-[#00ffff] rounded-none hover:bg-[#00ffff]/10 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)]">
+          <div className="mt-12 flex flex-col md:flex-row gap-6">
+            <a href="#contact" className="group relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-mono font-bold text-white transition-all duration-300 bg-transparent border-2 border-[#00ffff] rounded-none hover:bg-[#00ffff]/10 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)]">
               <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-[#00ffff] rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
               <span className="relative flex items-center gap-2">
                 ИССЛЕДОВАТЬ СИСТЕМУ
+              </span>
+            </a>
+
+            <a href="https://photo.filatiev.pro/" className="group relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-mono font-bold text-white transition-all duration-300 bg-transparent border-2 border-[#ff00ff] rounded-none hover:bg-[#ff00ff]/10 hover:shadow-[0_0_20px_rgba(255,0,255,0.5)]">
+              <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-[#ff00ff] rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
+              <span className="relative flex items-center gap-2">
+                ФОТО ПОРТФОЛИО
               </span>
             </a>
           </div>
