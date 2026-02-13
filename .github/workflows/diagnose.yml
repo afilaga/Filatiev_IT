@@ -1,0 +1,24 @@
+name: Diagnose Nginx
+on: workflow_dispatch
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            echo "=== NGINX STATUS ==="
+            sudo systemctl status nginx --no-pager
+            echo "=== ENABLED SITES ==="
+            ls -l /etc/nginx/sites-enabled/
+            echo "=== IT CONFIG CONTENT ==="
+            sudo cat /etc/nginx/sites-enabled/it.filatiev.pro || echo "File missing"
+            echo "=== DIRECTORY CONTENT ==="
+            ls -la /var/www/it.filatiev.pro
+            echo "=== CURL TEST (HTTP) ==="
+            curl -I -H "Host: it.filatiev.pro" http://127.0.0.1
+            echo "=== CURL TEST (HTTPS) ==="
+            curl -k -I -H "Host: it.filatiev.pro" https://127.0.0.1
