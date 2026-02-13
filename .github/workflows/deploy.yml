@@ -65,15 +65,11 @@ jobs:
             # Copy dist content
             echo "${{ secrets.VPS_PASSWORD }}" | sudo -S cp -r /tmp/it_deploy/dist/* /var/www/it.filatiev.pro/
             
-            # Setup Nginx Config ONLY if it doesn't exist (to preserve Certbot SSL changes)
-            if [ ! -f "/etc/nginx/sites-available/it.filatiev.pro" ]; then
-                echo "Installing new Nginx configuration..."
-                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S cp /tmp/it_deploy/nginx/it.filatiev.pro /etc/nginx/sites-available/it.filatiev.pro
-                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S ln -sf /etc/nginx/sites-available/it.filatiev.pro /etc/nginx/sites-enabled/
-                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S nginx -t && echo "${{ secrets.VPS_PASSWORD }}" | sudo -S systemctl reload nginx
-            else
-                echo "Nginx config already exists. Skipping overwrite to preserve SSL/Certbot settings."
-            fi
+            # Force update Nginx config to fix potential misconfiguration
+            echo "Installing/Updating Nginx configuration..."
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S cp /tmp/it_deploy/nginx/it.filatiev.pro /etc/nginx/sites-available/it.filatiev.pro
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S ln -sf /etc/nginx/sites-available/it.filatiev.pro /etc/nginx/sites-enabled/
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S nginx -t && echo "${{ secrets.VPS_PASSWORD }}" | sudo -S systemctl reload nginx
 
             # Cleanup
             rm -rf /tmp/it_deploy
