@@ -115,9 +115,7 @@ function App() {
           />
 
           <div className="text-center mt-6 md:mt-10 space-y-6 max-w-4xl">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-widest text-[#00ff41] font-mono uppercase glitch-effect" data-text="NETRUNNER">
-              NETRUNNER
-            </h2>
+
             <p className="text-lg md:text-2xl text-cyan-400 font-mono">
               &gt; Помогаю бизнесу работать удобно
             </p>
