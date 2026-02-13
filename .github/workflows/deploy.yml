@@ -1,0 +1,76 @@
+name: Deploy IT Portfolio
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: dist
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: dist
+
+      - name: List files for debug
+        run: ls -R dist
+
+      - name: Copy files via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: "dist/,nginx/it.filatiev.pro"
+          target: "/tmp/it_deploy"
+          strip_components: 0
+
+      - name: Setup Nginx and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S mkdir -p /var/www/it.filatiev.pro
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S chown -R $USER:$USER /var/www/it.filatiev.pro
+
+            # Copy dist content
+            echo "${{ secrets.VPS_PASSWORD }}" | sudo -S cp -r /tmp/it_deploy/dist/* /var/www/it.filatiev.pro/
+            
+            # Setup Nginx Config if exists
+            if [ -f "/tmp/it_deploy/nginx/it.filatiev.pro" ]; then
+                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S cp /tmp/it_deploy/nginx/it.filatiev.pro /etc/nginx/sites-available/it.filatiev.pro
+                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S ln -sf /etc/nginx/sites-available/it.filatiev.pro /etc/nginx/sites-enabled/
+                echo "${{ secrets.VPS_PASSWORD }}" | sudo -S nginx -t && echo "${{ secrets.VPS_PASSWORD }}" | sudo -S systemctl reload nginx
+            fi
+
+            # Cleanup
+            rm -rf /tmp/it_deploy
